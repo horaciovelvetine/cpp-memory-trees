@@ -18,7 +18,6 @@ protected:
     }
 };
 
-//? Test construction and basic properties
 TEST_F(BinaryTreeSetTests, DefaultConstructor)
 {
     BinaryTreeSet<int> defaultTree;
@@ -37,10 +36,8 @@ TEST_F(BinaryTreeSetTests, DestructorAndClear)
     EXPECT_EQ(treePtr->size(), 3) << "Tree should have 3 elements before deletion";
 
     delete treePtr; //? Should call destructor which calls clear()
-    //? No memory leaks should occur
 }
 
-//? Test insertion operations
 TEST_F(BinaryTreeSetTests, SingleInsert)
 {
     tree.insert(42);
@@ -107,7 +104,6 @@ TEST_F(BinaryTreeSetTests, InsertRangeEmptyVector)
     EXPECT_TRUE(tree.empty()) << "Tree should remain empty";
 }
 
-//? Test search operations
 TEST_F(BinaryTreeSetTests, ContainsExistingValue)
 {
     tree.insert(42);
@@ -166,7 +162,6 @@ TEST_F(BinaryTreeSetTests, FindEmptyTree)
     EXPECT_EQ(tree.find(42), nullptr) << "Find should return null in empty tree";
 }
 
-//? Test removal operations
 TEST_F(BinaryTreeSetTests, EraseLeafNode)
 {
     tree.insert(50);
@@ -412,7 +407,6 @@ TEST_F(BinaryTreeSetTests, TraversalEmptyTree)
     EXPECT_TRUE(visited.empty()) << "Postorder traversal of empty tree should not call callback";
 }
 
-//? Test height calculation
 TEST_F(BinaryTreeSetTests, HeightSingleNode)
 {
     tree.insert(42);
@@ -454,7 +448,6 @@ TEST_F(BinaryTreeSetTests, HeightRightHeavyTree)
     EXPECT_EQ(tree.height(), 4) << "Unbalanced right-heavy tree should have height 4";
 }
 
-//? Test with different data types
 TEST_F(BinaryTreeSetTests, StringTree)
 {
     BinaryTreeSet<std::string> stringTree;
@@ -545,7 +538,6 @@ TEST_F(BinaryTreeSetTests, RepeatedInsertAndRemove)
 
 TEST_F(BinaryTreeSetTests, ComplexTreeStructure)
 {
-    //? Create a complex tree structure
     tree.insert(50);
     tree.insert(25);
     tree.insert(75);
