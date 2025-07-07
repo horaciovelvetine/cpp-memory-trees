@@ -4,6 +4,10 @@
 
 namespace models
 {
+  // Forward declaration for friend class
+  template <typename U>
+  class BinaryTreeSet;
+
   /**
    * @brief A node in a binary tree set
    *
@@ -13,6 +17,10 @@ namespace models
    * - data: The value stored in the node
    * - left: Pointer to left child node (contains values less than current node)
    * - right: Pointer to right child node (contains values greater than current node)
+   *
+   * This class is designed to prevent accidental modification of tree structure.
+   * Only read-only access to node values and child pointers is provided to users.
+   * Tree modification operations are restricted to the BinaryTreeSet class.
    */
   template <typename T>
   class BinaryNode
@@ -21,11 +29,54 @@ namespace models
     T data;
     BinaryNode *left_, *right_;
 
+    // Private methods for BinaryTreeSet to use internally
+    // These methods are not available to users to prevent tree structure corruption
+
+    /**
+     * @brief Set a new value for this node (private - only for BinaryTreeSet)
+     *
+     * @param value The new value to store in this node
+     * @return T The new value that was set
+     *
+     * This method validates the new value before updating the node's data:
+     * - For std::string: throws std::invalid_argument if the string is empty
+     * - For primitive types (int, double): accepts any value
+     */
+    T setValue(const T &value);
+
+    /**
+     * @brief Set the left child pointer directly (private - only for BinaryTreeSet)
+     *
+     * @param node Pointer to the node to set as the left child
+     */
+    void setLeftPtr(BinaryNode<T> *node);
+
+    /**
+     * @brief Set the right child pointer directly (private - only for BinaryTreeSet)
+     *
+     * @param node Pointer to the node to set as the right child
+     */
+    void setRightPtr(BinaryNode<T> *node);
+
+    /**
+     * @brief Get the left child node (non-const version - private for BinaryTreeSet)
+     *
+     * @return BinaryNode<T>* Pointer to the left child node, or nullptr if no left child exists
+     */
+    BinaryNode<T> *left();
+
+    /**
+     * @brief Get the right child node (non-const version - private for BinaryTreeSet)
+     *
+     * @return BinaryNode<T>* Pointer to the right child node, or nullptr if no right child exists
+     */
+    BinaryNode<T> *right();
+
   public:
     /**
      * @brief Construct a new BinaryNode with the given value
      *
-     * @tparam value The value to store in this node
+     * @param value The value to store in this node
      * @throws std::invalid_argument if the value is invalid (e.g., empty string for std::string)
      *
      * This constructor validates the input value:
@@ -42,94 +93,20 @@ namespace models
     const T value() const;
 
     /**
-     * @brief Set a new value for this node
-     *
-     * @tparam value The new value to store in this node
-     * @return T The new value that was set
-     *
-     * This method validates the new value before updating the node's data:
-     * - For std::string: throws std::invalid_argument if the string is empty
-     * - For primitive types (int, double): accepts any value
-     */
-    T setValue(const T &value);
-
-    /**
-     * @brief Get the left child node
+     * @brief Get the left child node (read-only access)
      *
      * @return const BinaryNode<T>* Pointer to the left child node, or nullptr if no left child exists
      */
     const BinaryNode<T> *left() const;
 
     /**
-     * @brief Get the right child node
+     * @brief Get the right child node (read-only access)
      *
      * @return const BinaryNode<T>* Pointer to the right child node, or nullptr if no right child exists
      */
     const BinaryNode<T> *right() const;
 
-    /**
-     * @brief Get the left child node (non-const version)
-     *
-     * @return BinaryNode<T>* Pointer to the left child node, or nullptr if no left child exists
-     */
-    BinaryNode<T> *left();
-
-    /**
-     * @brief Get the right child node (non-const version)
-     *
-     * @return BinaryNode<T>* Pointer to the right child node, or nullptr if no right child exists
-     */
-    BinaryNode<T> *right();
-
-    /**
-     * @brief Set the left child node
-     *
-     * @tparam node The node to set as the left child
-     * @return BinaryNode<T>* Pointer to this node for method chaining
-     */
-    BinaryNode<T> *setLeft(const BinaryNode<T> &node);
-
-    /**
-     * @brief Set the right child node
-     *
-     * @param node The node to set as the right child
-     * @return BinaryNode<T>* Pointer to this node for method chaining
-     */
-    BinaryNode<T> *setRight(const BinaryNode<T> &node);
-
-    /**
-     * @brief Create and set a new left child node with the given value
-     *
-     * @tparam value The value to store in the new left child node
-     * @return BinaryNode<T>* Pointer to this node for method chaining
-     * @throws std::invalid_argument if the value is invalid (e.g., empty string for std::string)
-     */
-    BinaryNode<T> *setLeft(const T &value);
-
-    /**
-     * @brief Create and set a new right child node with the given value
-     *
-     * @param value The value to store in the new right child node
-     * @return BinaryNode<T>* Pointer to this node for method chaining
-     * @throws std::invalid_argument if the value is invalid (e.g., empty string for std::string)
-     */
-    BinaryNode<T> *setRight(const T &value);
-
-    /**
-     * @brief Set the left child pointer directly
-     *
-     * @param node Pointer to the node to set as the left child
-     */
-    void setLeftPtr(BinaryNode<T> *node);
-
-    /**
-     * @brief Set the right child pointer directly
-     *
-     * @param node Pointer to the node to set as the right child
-     */
-    void setRightPtr(BinaryNode<T> *node);
-
-    // Make BinaryTreeSet a friend class to access private members
+    // Make BinaryTreeSet a friend class to access private members for tree operations
     template <typename U>
     friend class BinaryTreeSet;
   };
@@ -183,13 +160,15 @@ namespace models
   }
 
   /**
-   * @brief Set a new value for this node
+   * @brief Set a new value for this node (private method for BinaryTreeSet)
    *
    * @tparam T The type of data stored in the node
    * @param value The new value to store in this node
    * @return T The new value that was set
    *
    * Updates the node's data with the new value and returns it.
+   * This method is private and only accessible by BinaryTreeSet to prevent
+   * accidental modification of node values that could break BST properties.
    */
   template <typename T>
   T BinaryNode<T>::setValue(const T &value)
@@ -248,12 +227,14 @@ namespace models
   }
 
   /**
-   * @brief Get the left child node (non-const version)
+   * @brief Get the left child node (non-const version - private for BinaryTreeSet)
    *
    * @tparam T The type of data stored in the node
    * @return BinaryNode<T>* Pointer to the left child node, or nullptr if no left child exists
    *
-   * Returns a non-const pointer to the left child node, allowing modification.
+   * Returns a non-const pointer to the left child node for internal tree operations.
+   * This method is private and only accessible by BinaryTreeSet to prevent
+   * accidental modification of tree structure.
    */
   template <typename T>
   BinaryNode<T> *BinaryNode<T>::left()
@@ -262,12 +243,14 @@ namespace models
   }
 
   /**
-   * @brief Get the right child node (non-const version)
+   * @brief Get the right child node (non-const version - private for BinaryTreeSet)
    *
    * @tparam T The type of data stored in the node
    * @return BinaryNode<T>* Pointer to the right child node, or nullptr if no right child exists
    *
-   * Returns a non-const pointer to the right child node, allowing modification.
+   * Returns a non-const pointer to the right child node for internal tree operations.
+   * This method is private and only accessible by BinaryTreeSet to prevent
+   * accidental modification of tree structure.
    */
   template <typename T>
   BinaryNode<T> *BinaryNode<T>::right()
@@ -276,83 +259,15 @@ namespace models
   }
 
   /**
-   * @brief Set the left child node by copying another node
-   *
-   * @tparam T The type of data stored in the node
-   * @param node The node to copy and set as the left child
-   * @return BinaryNode<T>* Pointer to this node for method chaining
-   *
-   * Creates a new BinaryNode by copying the data from the provided node
-   * and sets it as the left child. The original node is not affected.
-   */
-  template <typename T>
-  BinaryNode<T> *BinaryNode<T>::setLeft(const BinaryNode<T> &node)
-  {
-    left_ = new BinaryNode<T>(node.data);
-    return this;
-  }
-
-  /**
-   * @brief Set the right child node by copying another node
-   *
-   * @tparam T The type of data stored in the node
-   * @param node The node to copy and set as the right child
-   * @return BinaryNode<T>* Pointer to this node for method chaining
-   *
-   * Creates a new BinaryNode by copying the data from the provided node
-   * and sets it as the right child. The original node is not affected.
-   */
-  template <typename T>
-  BinaryNode<T> *BinaryNode<T>::setRight(const BinaryNode<T> &node)
-  {
-    right_ = new BinaryNode<T>(node.data);
-    return this;
-  }
-
-  /**
-   * @brief Create and set a new left child node with the given value
-   *
-   * @tparam T The type of data stored in the node
-   * @param value The value to store in the new left child node
-   * @return BinaryNode<T>* Pointer to this node for method chaining
-   * @throws std::invalid_argument if the value is invalid (e.g., empty string for std::string)
-   *
-   * Creates a new BinaryNode with the specified value and sets it as
-   * the left child. This method performs the same validation as the constructor.
-   */
-  template <typename T>
-  BinaryNode<T> *BinaryNode<T>::setLeft(const T &value)
-  {
-    left_ = new BinaryNode<T>(value);
-    return this;
-  }
-
-  /**
-   * @brief Create and set a new right child node with the given value
-   *
-   * @tparam T The type of data stored in the node
-   * @param value The value to store in the new right child node
-   * @return BinaryNode<T>* Pointer to this node for method chaining
-   * @throws std::invalid_argument if the value is invalid (e.g., empty string for std::string)
-   *
-   * Creates a new BinaryNode with the specified value and sets it as
-   * the right child. This method performs the same validation as the constructor.
-   */
-  template <typename T>
-  BinaryNode<T> *BinaryNode<T>::setRight(const T &value)
-  {
-    right_ = new BinaryNode<T>(value);
-    return this;
-  }
-
-  /**
-   * @brief Set the left child pointer directly
+   * @brief Set the left child pointer directly (private method for BinaryTreeSet)
    *
    * @tparam T The type of data stored in the node
    * @param node Pointer to the node to set as the left child
    *
    * Sets the left child pointer to the provided node without creating
    * a copy. This is useful for tree restructuring operations.
+   * This method is private and only accessible by BinaryTreeSet to prevent
+   * accidental modification of tree structure.
    */
   template <typename T>
   void BinaryNode<T>::setLeftPtr(BinaryNode<T> *node)
@@ -361,13 +276,15 @@ namespace models
   }
 
   /**
-   * @brief Set the right child pointer directly
+   * @brief Set the right child pointer directly (private method for BinaryTreeSet)
    *
    * @tparam T The type of data stored in the node
    * @param node Pointer to the node to set as the right child
    *
    * Sets the right child pointer to the provided node without creating
    * a copy. This is useful for tree restructuring operations.
+   * This method is private and only accessible by BinaryTreeSet to prevent
+   * accidental modification of tree structure.
    */
   template <typename T>
   void BinaryNode<T>::setRightPtr(BinaryNode<T> *node)

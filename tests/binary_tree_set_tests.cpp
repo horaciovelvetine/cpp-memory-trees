@@ -57,15 +57,16 @@ TEST_F(BinaryTreeSetTests, MultipleInserts)
 
     EXPECT_EQ(tree.size(), 5) << "Tree should have 5 elements after multiple inserts";
     EXPECT_EQ(tree.getRoot()->value(), 50) << "Root should be first inserted value";
-    EXPECT_EQ(tree.getRoot()->left()->value(), 30) << "Left child should be 30";
-    EXPECT_EQ(tree.getRoot()->right()->value(), 70) << "Right child should be 70";
+    const BinaryTreeSet<int> &constTree = tree;
+    EXPECT_EQ(constTree.getRoot()->left()->value(), 30) << "Left child should be 30";
+    EXPECT_EQ(constTree.getRoot()->right()->value(), 70) << "Right child should be 70";
 }
 
 TEST_F(BinaryTreeSetTests, DuplicateInsertPrevention)
 {
     tree.insert(42);
-    tree.insert(42); //? Duplicate insert
-    tree.insert(42); //? Another duplicate
+    tree.insert(42);
+    tree.insert(42);
 
     EXPECT_EQ(tree.size(), 1) << "Size should remain 1 after duplicate inserts";
     EXPECT_TRUE(tree.contains(42)) << "Tree should still contain the value";
@@ -86,7 +87,7 @@ TEST_F(BinaryTreeSetTests, InsertRange)
 TEST_F(BinaryTreeSetTests, InsertRangeWithDuplicates)
 {
     tree.insert(50);
-    std::vector<int> values = {30, 50, 70, 30, 50}; //? Contains duplicates
+    std::vector<int> values = {30, 50, 70, 30, 50};
     tree.insertRange(values);
 
     EXPECT_EQ(tree.size(), 3) << "Tree should have 3 unique elements after insertRange with duplicates";
@@ -201,6 +202,7 @@ TEST_F(BinaryTreeSetTests, EraseNodeWithTwoChildren)
     EXPECT_TRUE(tree.erase(50)) << "Erase should return true for node with two children";
     EXPECT_EQ(tree.size(), 6) << "Size should decrease by 1";
     EXPECT_FALSE(tree.contains(50)) << "Tree should not contain erased value";
+
     //? Root should be replaced with inorder successor (60)
     EXPECT_EQ(tree.getRoot()->value(), 60) << "Root should be replaced with inorder successor";
 }
@@ -236,7 +238,6 @@ TEST_F(BinaryTreeSetTests, EraseEmptyTree)
     EXPECT_TRUE(tree.empty()) << "Tree should remain empty";
 }
 
-//? Test clear operation
 TEST_F(BinaryTreeSetTests, ClearPopulatedTree)
 {
     tree.insert(50);
@@ -263,7 +264,6 @@ TEST_F(BinaryTreeSetTests, ClearEmptyTree)
     EXPECT_EQ(tree.height(), -1) << "Height should remain -1";
 }
 
-//? Test merge operation
 TEST_F(BinaryTreeSetTests, MergeTwoTrees)
 {
     tree.insert(50);
@@ -281,7 +281,6 @@ TEST_F(BinaryTreeSetTests, MergeTwoTrees)
     EXPECT_EQ(tree.size(), 7) << "Merged tree should have 7 elements";
     EXPECT_EQ(otherTree.size(), 4) << "Original tree should remain unchanged";
 
-    //? Check all values are present
     std::vector<int> expectedValues = {20, 30, 40, 50, 60, 70, 80};
     for (int value : expectedValues)
     {
@@ -337,7 +336,6 @@ TEST_F(BinaryTreeSetTests, MergeIntoEmptyTree)
     EXPECT_TRUE(tree.contains(70)) << "Tree should contain merged values";
 }
 
-//? Test traversal operations
 TEST_F(BinaryTreeSetTests, InorderTraversal)
 {
     tree.insert(50);
@@ -492,10 +490,8 @@ TEST_F(BinaryTreeSetTests, DoubleTree)
     EXPECT_EQ(visited, expected) << "Double tree inorder traversal should be in ascending order";
 }
 
-//? Test edge cases and stress tests
 TEST_F(BinaryTreeSetTests, LargeTreeOperations)
 {
-    //? Insert many elements
     for (int i = 0; i < 100; ++i)
     {
         tree.insert(i);
@@ -503,7 +499,6 @@ TEST_F(BinaryTreeSetTests, LargeTreeOperations)
 
     EXPECT_EQ(tree.size(), 100) << "Tree should have 100 elements";
 
-    //? Remove half the elements
     for (int i = 0; i < 50; ++i)
     {
         EXPECT_TRUE(tree.erase(i)) << "Should successfully erase element: " << i;
@@ -511,7 +506,6 @@ TEST_F(BinaryTreeSetTests, LargeTreeOperations)
 
     EXPECT_EQ(tree.size(), 50) << "Tree should have 50 elements after removal";
 
-    //? Verify remaining elements
     for (int i = 50; i < 100; ++i)
     {
         EXPECT_TRUE(tree.contains(i)) << "Tree should still contain element: " << i;
@@ -525,7 +519,6 @@ TEST_F(BinaryTreeSetTests, LargeTreeOperations)
 
 TEST_F(BinaryTreeSetTests, RepeatedInsertAndRemove)
 {
-    //? Insert and remove the same element multiple times
     for (int i = 0; i < 10; ++i)
     {
         tree.insert(42);
@@ -557,7 +550,6 @@ TEST_F(BinaryTreeSetTests, ComplexTreeStructure)
     EXPECT_EQ(tree.size(), 15) << "Complex tree should have 15 elements";
     EXPECT_EQ(tree.height(), 3) << "Complex tree should have height 3";
 
-    //? Test removal of nodes with different configurations
     EXPECT_TRUE(tree.erase(25)) << "Should remove node with two children";
     EXPECT_EQ(tree.size(), 14) << "Size should decrease by 1";
     EXPECT_FALSE(tree.contains(25)) << "Tree should not contain removed value";
@@ -566,7 +558,6 @@ TEST_F(BinaryTreeSetTests, ComplexTreeStructure)
     EXPECT_EQ(tree.size(), 13) << "Size should decrease by 1";
     EXPECT_FALSE(tree.contains(50)) << "Tree should not contain removed root";
 
-    //? Verify tree structure is maintained
     EXPECT_TRUE(tree.contains(12)) << "Tree should still contain left subtree elements";
     EXPECT_TRUE(tree.contains(75)) << "Tree should still contain right subtree elements";
 }
