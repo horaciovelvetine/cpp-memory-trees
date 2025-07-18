@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.10)
 project(tree_explorer VERSION 1.0.0 LANGUAGES CXX)
 
 # Generate compile_commands.json for better IDE support
@@ -35,6 +35,9 @@ set_target_properties(tree_explorer PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
 )
+
+# Enable testing for CTest visibility
+enable_testing()
 
 # Add tests subdirectory
 add_subdirectory(tests) 
