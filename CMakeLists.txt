@@ -14,10 +14,36 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # Compiler flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fsanitize=address -g")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
-set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fsanitize=address")
+if(WIN32)
+    # Windows-specific compiler flags
+    # /W4 => Warning level 4
+    # /Zi => Enable debug info
+    # /Od => Disable optimizations
+    # /O2 => Maximize speed optimizations
+    # /EHsc => Enable C++ exception handling
+    # /std:c++17 => Set C++ standard
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /EHsc /std:c++17")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /Od /Zi")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2")
+    
+    # Check if using MinGW (which supports AddressSanitizer)
+    if(MINGW)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fsanitize=address -g")
+        set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fsanitize=address")
+    endif()
+else()
+    # Unix-like compiler flags
+    # -Wall => Enable all warnings
+    # -Wextra => Enable extra warnings
+    # -fsanitize=address => Enable AddressSanitizer for memory error detection
+    # -g => Generate debug information
+    # -O0 => Disable optimizations (debug)
+    # -O3 => Maximum optimization level (release)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fsanitize=address -g") 
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
+    set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fsanitize=address")
+endif()
 
 # Include directories
 include_directories(${CMAKE_SOURCE_DIR}/include)
