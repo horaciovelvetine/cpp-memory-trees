@@ -1,17 +1,19 @@
-#include <gtest/gtest.h>
 #include "models/binary_tree_set.hpp"
-#include <vector>
-#include <string>
 #include <algorithm>
+#include <gtest/gtest.h>
+#include <string>
+#include <vector>
 
 using namespace models;
 
 class BinaryTreeSetTests : public ::testing::Test
 {
-protected:
+  protected:
     BinaryTreeSet<int> tree;
 
-    void SetUp() override {}
+    void SetUp() override
+    {
+    }
     void TearDown() override
     {
         tree.clear();
@@ -347,8 +349,7 @@ TEST_F(BinaryTreeSetTests, InorderTraversal)
     tree.insert(80);
 
     std::vector<int> visited;
-    tree.traverseInorder([&visited](const int &value)
-                         { visited.push_back(value); });
+    tree.traverseInorder([&visited](const int &value) { visited.push_back(value); });
 
     std::vector<int> expected = {20, 30, 40, 50, 60, 70, 80};
     EXPECT_EQ(visited, expected) << "Inorder traversal should visit nodes in ascending order";
@@ -363,8 +364,7 @@ TEST_F(BinaryTreeSetTests, PreorderTraversal)
     tree.insert(40);
 
     std::vector<int> visited;
-    tree.traversePreorder([&visited](const int &value)
-                          { visited.push_back(value); });
+    tree.traversePreorder([&visited](const int &value) { visited.push_back(value); });
 
     std::vector<int> expected = {50, 30, 20, 40, 70};
     EXPECT_EQ(visited, expected) << "Preorder traversal should visit root, left subtree, then right subtree";
@@ -379,8 +379,7 @@ TEST_F(BinaryTreeSetTests, PostorderTraversal)
     tree.insert(40);
 
     std::vector<int> visited;
-    tree.traversePostorder([&visited](const int &value)
-                           { visited.push_back(value); });
+    tree.traversePostorder([&visited](const int &value) { visited.push_back(value); });
 
     std::vector<int> expected = {20, 40, 30, 70, 50};
     EXPECT_EQ(visited, expected) << "Postorder traversal should visit left subtree, right subtree, then root";
@@ -390,18 +389,15 @@ TEST_F(BinaryTreeSetTests, TraversalEmptyTree)
 {
     std::vector<int> visited;
 
-    tree.traverseInorder([&visited](const int &value)
-                         { visited.push_back(value); });
+    tree.traverseInorder([&visited](const int &value) { visited.push_back(value); });
     EXPECT_TRUE(visited.empty()) << "Inorder traversal of empty tree should not call callback";
 
     visited.clear();
-    tree.traversePreorder([&visited](const int &value)
-                          { visited.push_back(value); });
+    tree.traversePreorder([&visited](const int &value) { visited.push_back(value); });
     EXPECT_TRUE(visited.empty()) << "Preorder traversal of empty tree should not call callback";
 
     visited.clear();
-    tree.traversePostorder([&visited](const int &value)
-                           { visited.push_back(value); });
+    tree.traversePostorder([&visited](const int &value) { visited.push_back(value); });
     EXPECT_TRUE(visited.empty()) << "Postorder traversal of empty tree should not call callback";
 }
 
@@ -461,8 +457,7 @@ TEST_F(BinaryTreeSetTests, StringTree)
     EXPECT_FALSE(stringTree.contains("grape")) << "String tree should not contain 'grape'";
 
     std::vector<std::string> visited;
-    stringTree.traverseInorder([&visited](const std::string &value)
-                               { visited.push_back(value); });
+    stringTree.traverseInorder([&visited](const std::string &value) { visited.push_back(value); });
 
     std::vector<std::string> expected = {"apple", "banana", "cherry", "date"};
     EXPECT_EQ(visited, expected) << "String tree inorder traversal should be alphabetical";
@@ -483,8 +478,7 @@ TEST_F(BinaryTreeSetTests, DoubleTree)
     EXPECT_FALSE(doubleTree.contains(1.0)) << "Double tree should not contain 1.0";
 
     std::vector<double> visited;
-    doubleTree.traverseInorder([&visited](const double &value)
-                               { visited.push_back(value); });
+    doubleTree.traverseInorder([&visited](const double &value) { visited.push_back(value); });
 
     std::vector<double> expected = {1.41, 2.23, 2.71, 3.14};
     EXPECT_EQ(visited, expected) << "Double tree inorder traversal should be in ascending order";

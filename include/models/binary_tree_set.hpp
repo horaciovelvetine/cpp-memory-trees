@@ -2,16 +2,15 @@
 
 #include "binary_node.hpp"
 
-#include <functional>
 #include <cstddef>
+#include <functional>
 #include <vector>
 
 namespace models
 {
 
-  template <typename T>
-  class BinaryTreeSet
-  {
+template <typename T> class BinaryTreeSet
+{
   private:
     BinaryNode<T> *root;
     size_t tree_size;
@@ -29,8 +28,13 @@ namespace models
     void traversePostorderRecursive(const BinaryNode<T> *node, std::function<void(const T &)> callback) const;
 
   public:
-    BinaryTreeSet() : root(nullptr), tree_size(0) {}
-    ~BinaryTreeSet() { clear(); }
+    BinaryTreeSet() : root(nullptr), tree_size(0)
+    {
+    }
+    ~BinaryTreeSet()
+    {
+        clear();
+    }
 
     //
     //! ACCESSORS/GETTERS/FIELDS
@@ -41,25 +45,36 @@ namespace models
      *
      * @return const BinaryNode<T>* Pointer to the root node that cannot be modified
      *
-     * This method provides read-only access to the root node and its children. For write access use the non-const overload instead
+     * This method provides read-only access to the root node and its children. For write access use the non-const
+     * overload instead
      */
-    const BinaryNode<T> *getRoot() const { return root; }
+    const BinaryNode<T> *getRoot() const
+    {
+        return root;
+    }
 
     /**
      * @brief Get the root node of the binary tree with write access
      *
      * @return BinaryNode<T>* Pointer to the root node that can be modified
      *
-     * This method provides direct access to modify the root node and its children. For read-only access use the const overload instead
+     * This method provides direct access to modify the root node and its children. For read-only access use the const
+     * overload instead
      */
-    BinaryNode<T> *getRoot() { return root; }
+    BinaryNode<T> *getRoot()
+    {
+        return root;
+    }
 
     /**
      * @brief Get the total number of nodes in the binary tree
      *
      * @return size_t The number of nodes currently in the tree
      */
-    size_t size() const { return tree_size; }
+    size_t size() const
+    {
+        return tree_size;
+    }
 
     /**
      * @brief Check if the binary tree is empty (the root node pointer is a nullptr)
@@ -67,7 +82,10 @@ namespace models
      * @return true if the tree contains no nodes
      * @return false if the tree contains at least one node
      */
-    bool empty() const { return root == nullptr; }
+    bool empty() const
+    {
+        return root == nullptr;
+    }
 
     /**
      * @brief Get the height of the binary tree
@@ -101,7 +119,8 @@ namespace models
     void insert(const T &value);
 
     /**
-     * @brief Inserts a copy of each element in the range if and only if there is no element with that value already present.
+     * @brief Inserts a copy of each element in the range if and only if there is no element with that value already
+     * present.
      *
      * @param range A vector containing elements to insert into the set
      * @return void
@@ -230,5 +249,5 @@ namespace models
      * that require processing child nodes first, such as deletion or calculating expression trees.
      */
     void traversePostorder(std::function<void(const T &)> callback) const;
-  };
-}
+};
+} // namespace models
