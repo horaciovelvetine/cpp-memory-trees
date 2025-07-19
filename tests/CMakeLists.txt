@@ -11,6 +11,14 @@ FetchContent_Declare(
 
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+# Disable AddressSanitizer for GoogleTest on Windows MSVC (not supported)
+if(WIN32 AND NOT MINGW)
+    # Remove AddressSanitizer flags for MSVC as it's not supported
+    string(REPLACE "-fsanitize=address" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    string(REPLACE "-fsanitize=address" "" CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS}")
+endif()
+
 FetchContent_MakeAvailable(googletest)
 
 # Include directories for tests
